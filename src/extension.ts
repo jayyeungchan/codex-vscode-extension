@@ -5,7 +5,7 @@ let codexTerminal: vscode.Terminal | undefined;
 let editorTerminal: vscode.Terminal | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('Claude Code Router 扩展已激活!');
+	console.log('OpenAI Codex 扩展已激活!');
 
 	// 注册 start codex 命令
 	const startCodexCommand = vscode.commands.registerCommand('codex.start', () => {

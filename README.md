@@ -2,7 +2,7 @@
 
 ![Codex-Plugin](src/codex-extension.png)
 
-Codex-Plugin - Claude Code Router 命令行工具扩展，现已支持在编辑器窗口中显示真正的终端！
+Codex-Plugin - OpenAI Codex 命令行工具扩展，现已支持在编辑器窗口中显示真正的终端！
 
 ## 功能特性
 
@@ -84,11 +84,11 @@ setTimeout(() => {
 
 - VSCode 版本: >= 1.74.0
 - 支持的操作系统: Windows, macOS, Linux
-- 需要Claude Code Router CLI工具
+- 需要OpenAI Codex CLI工具
 
 ## 📦 安装和使用
 
-1. 确保已安装Claude Code Router CLI工具
+1. 确保已安装OpenAI Codex CLI工具
 2. 打开VSCode并加载此扩展
 3. 打开一个工作区或文件夹
 4. 使用上述任意方法启动终端功能
