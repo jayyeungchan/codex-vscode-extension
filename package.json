@@ -3,7 +3,7 @@
   "displayName": "Codex-Plugin",
   "description": "Codex-Plugin - Claude Code Router 命令行工具扩展",
   "version": "0.0.2",
-  "publisher": "codex-plugin",
+  "publisher": "codex-extension",
   "icon": "src/codex-extension.png",
   "engines": {
     "vscode": "^1.74.0"
