@@ -20,18 +20,18 @@
   "contributes": {
     "commands": [
       {
-        "command": "ccr.start",
+        "command": "codex.start",
         "title": "Start Codex",
         "category": "Codex",
         "icon": "src/codex-extension.png"
       },
       {
-        "command": "ccr.code",
+        "command": "codex.code",
         "title": "Codex",
         "category": "Codex"
       },
       {
-        "command": "ccr.openTerminalEditorSide",
+        "command": "codex.openTerminalEditorSide",
         "title": "Open Terminal in Editor Side",
         "category": "Codex",
         "icon": "src/codex-extension.png"
@@ -40,22 +40,22 @@
     "menus": {
       "editor/title": [
         {
-          "command": "ccr.openTerminalEditorSide",
+          "command": "codex.openTerminalEditorSide",
           "when": "true",
           "group": "navigation"
         }
       ],
       "commandPalette": [
         {
-          "command": "ccr.start",
+          "command": "codex.start",
           "when": "true"
         },
         {
-          "command": "ccr.code",
+          "command": "codex.code",
           "when": "true"
         },
         {
-          "command": "ccr.openTerminalEditorSide",
+          "command": "codex.openTerminalEditorSide",
           "when": "true"
         }
       ]

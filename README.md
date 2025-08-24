@@ -55,9 +55,9 @@ Codex-Plugin - Claude Code Router 命令行工具扩展，现已支持在编辑�
 
 ### 方法三：通过快捷键（可自定义）
 在VSCode的键盘快捷键设置中可以为以下命令设置快捷键：
-- `ccr.openTerminalEditorSide`
-- `ccr.start`
-- `ccr.code`
+- `codex.openTerminalEditorSide`
+- `codex.start`
+- `codex.code`
 
 ## 🛠️ 技术实现
 

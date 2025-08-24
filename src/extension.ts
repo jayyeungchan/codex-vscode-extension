@@ -8,17 +8,17 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Claude Code Router 扩展已激活!');
 
 	// 注册 start codex 命令
-	const startCodexCommand = vscode.commands.registerCommand('ccr.start', () => {
+	const startCodexCommand = vscode.commands.registerCommand('codex.start', () => {
 		startCodexTerminal();
 	});
 
 	// 注册 codex code 命令
-	const codexCodeCommand = vscode.commands.registerCommand('ccr.code', () => {
+	const codexCodeCommand = vscode.commands.registerCommand('codex.code', () => {
 		executeCodexCode();
 	});
 
 	// 新增：注册在编辑器侧边打开终端的命令
-	const openTerminalEditorSideCommand = vscode.commands.registerCommand('ccr.openTerminalEditorSide', () => {
+	const openTerminalEditorSideCommand = vscode.commands.registerCommand('codex.openTerminalEditorSide', () => {
 		openTerminalEditorSide();
 	});
 
