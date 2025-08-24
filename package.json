@@ -1,10 +1,10 @@
 {
-  "name": "wanwu",
-  "displayName": "Wanwu",
-  "description": "万物 - Claude Code Router 命令行工具扩展",
+  "name": "codex-plugin",
+  "displayName": "Codex-Plugin",
+  "description": "Codex-Plugin - Claude Code Router 命令行工具扩展",
   "version": "0.0.2",
-  "publisher": "wanwu",
-  "icon": "src/Wanwu.png",
+  "publisher": "codex-plugin",
+  "icon": "src/codex-extension.png",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/wanwu-ai/wanwu.git"
+    "url": "https://github.com/codex-plugin/codex-plugin.git"
   },
   "activationEvents": [],
   "main": "./out/extension.js",
@@ -21,20 +21,20 @@
     "commands": [
       {
         "command": "ccr.start",
-        "title": "Start CCR",
-        "category": "CCR",
-        "icon": "src/Wanwu.png"
+        "title": "Start Codex",
+        "category": "Codex",
+        "icon": "src/codex-extension.png"
       },
       {
         "command": "ccr.code",
-        "title": "CCR Code",
-        "category": "CCR"
+        "title": "Codex",
+        "category": "Codex"
       },
       {
         "command": "ccr.openTerminalEditorSide",
         "title": "Open Terminal in Editor Side",
-        "category": "CCR",
-        "icon": "src/Wanwu.png"
+        "category": "Codex",
+        "icon": "src/codex-extension.png"
       }
     ],
     "menus": {
@@ -63,8 +63,8 @@
     "terminal": {
       "profiles": [
         {
-          "id": "ccr-terminal",
-          "title": "CCR Terminal"
+          "id": "codex-terminal",
+          "title": "Codex Terminal"
         }
       ]
     }
