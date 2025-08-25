@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 }
 
-// 新增：在编辑器侧边打开终端并执行 ccr code
+// 新增：在编辑器侧边打开终端并执行 codex
 function openTerminalEditorSide() {
 	// 获取当前工作区的根目录
 	const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
@@ -48,7 +48,7 @@ function openTerminalEditorSide() {
 		return;
 	}
 
-	// 如果编辑器终端已存在，显示它并执行 ccr code；否则创建新的
+	// 如果编辑器终端已存在，显示它并执行 codex；否则创建新的
 	if (editorTerminal) {
 		editorTerminal.show();
 		setTimeout(() => {
@@ -66,8 +66,8 @@ function openTerminalEditorSide() {
 		setTimeout(() => {
 			editorTerminal = vscode.window.activeTerminal;
 			if (editorTerminal) {
-				// 发送欢迎信息并自动执行 ccr code
-				editorTerminal.sendText('echo "🚀 CCR 编辑器侧边终端已启动！"');
+				// 发送欢迎信息并自动执行 codex
+				editorTerminal.sendText('echo "🚀 Codex 编辑器侧边终端已启动！"');
 				editorTerminal.sendText('echo "📍 当前目录: $(pwd)"');
 				editorTerminal.sendText('echo "⚡ 正在自动启动 codex..."');
 				editorTerminal.sendText('');
@@ -77,7 +77,7 @@ function openTerminalEditorSide() {
 		}, 800);
 	});
 
-	vscode.window.showInformationMessage('CCR 编辑器终端已在侧边打开，正在自动执行 codex...');
+	vscode.window.showInformationMessage('Codex 编辑器终端已在侧边打开，正在自动执行 codex...');
 }
 
 function startCodexTerminal() {
