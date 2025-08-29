@@ -2,7 +2,7 @@
   "name": "codex-plugin",
   "displayName": "Codex-Plugin",
   "description": "Codex-Plugin - OpenAI Codex CLI 命令行工具扩展",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "codex-extension",
   "icon": "src/codex-extension.png",
   "engines": {
@@ -18,6 +18,43 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Codex Extension",
+      "properties": {
+        "codex.terminalDelay": {
+          "type": "number",
+          "default": 800,
+          "minimum": 100,
+          "maximum": 5000,
+          "description": "终端创建后执行命令的延迟时间(毫秒)"
+        },
+        "codex.welcomeMessage": {
+          "type": "string",
+          "default": "🚀 Codex 编辑器侧边终端已启动！",
+          "description": "终端启动时显示的欢迎信息"
+        },
+        "codex.autoExecuteCodex": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否在创建终端后自动执行codex命令"
+        },
+        "codex.confirmBeforeExecute": {
+          "type": "boolean",
+          "default": false,
+          "description": "执行命令前是否需要用户确认"
+        },
+        "codex.codexCommand": {
+          "type": "string",
+          "default": "codex",
+          "description": "要执行的codex命令"
+        },
+        "codex.enableLogging": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否启用详细日志记录"
+        }
+      }
+    },
     "commands": [
       {
         "command": "codex.start",
@@ -35,6 +72,16 @@
         "title": "Open Terminal in Editor Side",
         "category": "Codex",
         "icon": "src/codex-extension.png"
+      },
+      {
+        "command": "codex.showLogs",
+        "title": "Show Logs",
+        "category": "Codex"
+      },
+      {
+        "command": "codex.checkHealth",
+        "title": "Check Health",
+        "category": "Codex"
       }
     ],
     "menus": {
@@ -56,6 +103,14 @@
         },
         {
           "command": "codex.openTerminalEditorSide",
+          "when": "true"
+        },
+        {
+          "command": "codex.showLogs",
+          "when": "true"
+        },
+        {
+          "command": "codex.checkHealth",
           "when": "true"
         }
       ]

@@ -1,133 +1,113 @@
 import * as vscode from 'vscode';
+import { TerminalManager } from './terminalManager';
+import { ConfigManager, LocalizationManager } from './config';
+import { Logger } from './logger';
 
-let codexTerminal: vscode.Terminal | undefined;
-// 新增：编辑器区域的终端
-let editorTerminal: vscode.Terminal | undefined;
+let terminalManager: TerminalManager;
+let logger: Logger;
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('OpenAI Codex 扩展已激活!');
+	try {
+		// 初始化管理器
+		terminalManager = new TerminalManager();
+		logger = new Logger();
+		
+		logger.log(LocalizationManager.getMessage('extensionActivated'));
 
-	// 注册 start codex 命令
-	const startCodexCommand = vscode.commands.registerCommand('codex.start', () => {
-		startCodexTerminal();
-	});
+		// 注册命令
+		const commands = [
+			vscode.commands.registerCommand('codex.start', async () => {
+				await terminalManager.createCodexTerminal();
+			}),
+			vscode.commands.registerCommand('codex.code', async () => {
+				await terminalManager.executeCodex();
+			}),
+			vscode.commands.registerCommand('codex.openTerminalEditorSide', async () => {
+				await terminalManager.createEditorTerminal();
+			}),
+			vscode.commands.registerCommand('codex.showLogs', () => {
+				logger.show();
+			}),
+			vscode.commands.registerCommand('codex.checkHealth', async () => {
+				await checkExtensionHealth();
+			})
+		];
 
-	// 注册 codex code 命令
-	const codexCodeCommand = vscode.commands.registerCommand('codex.code', () => {
-		executeCodexCode();
-	});
-
-	// 新增：注册在编辑器侧边打开终端的命令
-	const openTerminalEditorSideCommand = vscode.commands.registerCommand('codex.openTerminalEditorSide', () => {
-		openTerminalEditorSide();
-	});
-
-	context.subscriptions.push(
-		startCodexCommand, 
-		codexCodeCommand, 
-		openTerminalEditorSideCommand
-	);
-
-	// 监听终端关闭事件
-	vscode.window.onDidCloseTerminal((terminal) => {
-		if (terminal === codexTerminal) {
-			codexTerminal = undefined;
-		}
-		if (terminal === editorTerminal) {
-			editorTerminal = undefined;
-		}
-	});
-}
-
-// 新增：在编辑器侧边打开终端并执行 codex
-function openTerminalEditorSide() {
-	// 获取当前工作区的根目录
-	const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-	if (!workspaceFolder) {
-		vscode.window.showErrorMessage('请先打开一个工作区');
-		return;
-	}
-
-	// 如果编辑器终端已存在，显示它并执行 codex；否则创建新的
-	if (editorTerminal) {
-		editorTerminal.show();
-		setTimeout(() => {
-			if (editorTerminal) {
-				editorTerminal.sendText('codex');
+		// 注册配置变化监听
+		const configWatcher = ConfigManager.onConfigChange((e) => {
+			if (e.affectsConfiguration('codex')) {
+				logger.log('Configuration changed, reloading...');
 			}
-		}, 300);
-		vscode.window.showInformationMessage('编辑器终端已显示，正在执行 codex...');
-		return;
-	}
-
-	// 使用 workbench.action.createTerminalEditorSide 命令创建终端
-	vscode.commands.executeCommand('workbench.action.createTerminalEditorSide').then(() => {
-		// 等待终端创建完成，然后获取活动终端
-		setTimeout(() => {
-			editorTerminal = vscode.window.activeTerminal;
-			if (editorTerminal) {
-				// 发送欢迎信息并自动执行 codex
-				editorTerminal.sendText('echo "🚀 Codex 编辑器侧边终端已启动！"');
-				editorTerminal.sendText('echo "📍 当前目录: $(pwd)"');
-				editorTerminal.sendText('echo "⚡ 正在自动启动 codex..."');
-				editorTerminal.sendText('');
-				// 自动执行 codex 命令
-				editorTerminal.sendText('codex');
-			}
-		}, 800);
-	});
-
-	vscode.window.showInformationMessage('Codex 编辑器终端已在侧边打开，正在自动执行 codex...');
-}
-
-function startCodexTerminal() {
-	// 获取当前工作区的根目录
-	const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-	if (!workspaceFolder) {
-		vscode.window.showErrorMessage('请先打开一个工作区');
-		return;
-	}
-
-	// 如果终端已存在，显示它；否则创建新的终端
-	if (codexTerminal) {
-		codexTerminal.show();
-		vscode.window.showInformationMessage('Codex 终端已打开');
-	} else {
-		codexTerminal = vscode.window.createTerminal({
-			name: 'Codex Terminal',
-			cwd: workspaceFolder.uri.fsPath,
-			message: 'Codex 终端已启动\n输入 "codex" 开始使用'
 		});
-		codexTerminal.show();
-		vscode.window.showInformationMessage('Codex 终端已创建并打开');
+
+		context.subscriptions.push(...commands, configWatcher);
+		
+		// 添加扩展资源清理
+		context.subscriptions.push({
+			dispose: () => {
+				terminalManager.dispose();
+				logger.dispose();
+			}
+		});
+		
+	} catch (error) {
+		console.error('Failed to activate Codex extension:', error);
+		vscode.window.showErrorMessage(`Codex扩展激活失败: ${error}`);
 	}
 }
 
-function executeCodexCode() {
-	// 确保终端存在
-	if (!codexTerminal) {
-		startCodexTerminal();
-		// 等待终端创建完成后执行命令
-		setTimeout(() => {
-			if (codexTerminal) {
-				codexTerminal.sendText('codex');
-			}
-		}, 500);
-	} else {
-		codexTerminal.show();
-		codexTerminal.sendText('codex');
+async function checkExtensionHealth(): Promise<void> {
+	try {
+		const config = ConfigManager.getConfig();
+		const terminalInfo = terminalManager.getTerminalInfo();
+		
+		const healthReport = [
+			'🏥 Codex扩展健康检查报告',
+			'',
+			'⚙️ 配置信息:',
+			`  - 终端延迟: ${config.terminalDelay}ms`,
+			`  - 自动执行: ${config.autoExecuteCodex ? '启用' : '禁用'}`,
+			`  - 确认执行: ${config.confirmBeforeExecute ? '启用' : '禁用'}`,
+			`  - 日志记录: ${config.enableLogging ? '启用' : '禁用'}`,
+			`  - 执行命令: ${config.codexCommand}`,
+			'',
+			'📱 终端状态:',
+			`  - 活跃终端数量: ${terminalInfo.length}`,
+			...terminalInfo.map(info => `  - ${info.type}: 创建于 ${info.created.toLocaleString()}`),
+			'',
+			'🌍 环境信息:',
+			`  - VSCode版本: ${vscode.version}`,
+			`  - 工作区: ${vscode.workspace.workspaceFolders?.[0]?.name || '未打开'}`,
+			'',
+			'✅ 扩展运行正常'
+		].join('\n');
+		
+		const document = await vscode.workspace.openTextDocument({
+			content: healthReport,
+			language: 'plaintext'
+		});
+		
+		await vscode.window.showTextDocument(document);
+		logger.log('Health check completed successfully');
+		
+	} catch (error) {
+		logger.error('Health check failed', error);
+		vscode.window.showErrorMessage(`健康检查失败: ${error}`);
 	}
-	
-	vscode.window.showInformationMessage('已执行 Codex 命令');
 }
 
 
 
 export function deactivate() {
-	if (codexTerminal) {
-		codexTerminal.dispose();
-	}
-	if (editorTerminal) {
-		editorTerminal.dispose();
+	try {
+		if (terminalManager) {
+			terminalManager.dispose();
+		}
+		if (logger) {
+			logger.dispose();
+		}
+		logger?.log('Extension deactivated successfully');
+	} catch (error) {
+		console.error('Error during extension deactivation:', error);
 	}
 }
